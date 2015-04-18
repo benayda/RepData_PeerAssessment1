@@ -1,17 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-author: "Benay Dara-Abrams"
-date: "April 18, 2015"
-output: 
-  html_document:
-    keep_md: true
-
----
+# Reproducible Research: Peer Assessment 1
+Benay Dara-Abrams  
+April 18, 2015  
 
 
 ## Loading and preprocessing the data
 Read the Activity dataset into a data frame, rr_df.
-```{r}
+
+```r
 rr_df <- read.csv("RepData_PeerAssessment1/activity/activity.csv")
 ```
 
@@ -22,7 +17,8 @@ Then a histogram of the total number of steps taken each day is plotted.
 After the histogram is plotted, this section calculates the mean and median 
 of the total number of steps taken per day.
 
-```{r}
+
+```r
 ## Sum the number of steps taken by day.
 steps_sum <- by(rr_df$steps, rr_df$date, sum, simplify = FALSE)
 ## Convert the number of steps into numeric.
@@ -32,17 +28,33 @@ total_steps <- as.numeric(steps_sum)
 ## Add a title at the top of the histogram and on the x-axis.
 hist(total_steps, main = "Histogram of Steps Taken", ylim = c(0, 25),
      xlab = "Total Number of Steps Taken Each Day divided into 15 bins", 15)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 ## Calculate the mean of the total number of steps taken each day.
 mean_steps <- mean(total_steps, na.rm = TRUE)
 ## Concatenate a title with the value of the mean of the total number of steps and print.
 print_string <- paste("The mean of the total steps taken per day = ", mean_steps)
 ## Print result without quotation marks.
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The mean of the total steps taken per day =  10766.1886792453
+```
+
+```r
 ## Calculate the median of the total number of steps taken each day.
 median_steps <- median(total_steps, na.rm = TRUE)
 ## Concatenate a title with the value of the median of the total number of steps and print.
 print_string <- paste("The median of the total steps taken per day = ", median_steps)
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The median of the total steps taken per day =  10765
 ```
 ## What is the average daily activity pattern?
 This section of code makes a time series plot of the 5-minute interval (on the x-axis)
@@ -51,7 +63,8 @@ Then the maximum number of steps in any one 5-minute interval is calculated and
 the index of the particular 5-minute interval in which the maximum occurred is determined.
 After the index of that interval is found, the start time of that 5-minute interval
 is converted into the hour and time, printed in 24-hour time format.
-```{r}
+
+```r
 ## Calculate the average number of steps during each 5-minute interval across all days.
 steps_average_by_interval <- by(rr_df$steps, rr_df$interval, mean, na.rm = TRUE, simplify = FALSE)
 ## Convert the average number of steps into numeric.
@@ -62,22 +75,44 @@ minutes_day <- (60 * 24)
 ## the average number of steps taken, averaged across all days (on the y-axis).
 ## Add titles for main at top of plot as well as for the x-axis and y-axis.
 plot(seq(0, (minutes_day - 5), by=5), main = "Time Series Plot of Time Interval vs. Average Steps Taken", xlab = "5-Minute Interval", ylab = "Average number of steps taken", average_steps, type="l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 ## Calculate the maximum number of steps in a 5-minute interval on average across all the days.
 maximum_steps <- max(average_steps, na.rm = TRUE)
 print_string <- paste("The maximum number of steps in a 5-minute interval on average across all days =", maximum_steps)
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The maximum number of steps in a 5-minute interval on average across all days = 206.169811320755
+```
+
+```r
 ## Determine the index of the 5-minute interval in which the maximum number of steps occurred.
 max_index <- which(average_steps == maximum_steps)
 print_string <- paste("The index of the 5-minute interval with the maximum number of steps =", 
                       max_index)
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The index of the 5-minute interval with the maximum number of steps = 104
+```
+
+```r
 ## Calculate the time of day represented by this 5-minute interval according to 24-hour time.
 hour_of_day <- (max_index * 5) %/% 60
 minute_of_hour <- (max_index * 5) - (hour_of_day * 60)
 ## Concatenate using paste0 and collapse to show time as hour:minutes with no spaces around colon.
 print_string <- paste0("The start time, in 24-hour time, for 5-minute interval when maximum number of steps occurred is: ", hour_of_day, zero.print =":", minute_of_hour, collapse = NULL)
 print(print_string, quote = FALSE)
+```
 
+```
+## [1] The start time, in 24-hour time, for 5-minute interval when maximum number of steps occurred is: 8:40
 ```
 
 ## Imputing missing values
@@ -102,7 +137,8 @@ Comparing the two histograms, we can see the impact of imputing missing data on
 the estimates of the total daily number of steps is that the peak is higher for the dataset
 with imputed values, but the overall shape is the same for both histograms.
 
-```{r}
+
+```r
 ## Calculate and report total number of missing values in the dataset, that is,
 ## the total number of rows with NA's.
 missing_indices <- which(is.na(rr_df$steps))
@@ -110,6 +146,13 @@ total_missing <- length(missing_indices)
 ## Concatenate and print explanatory text and total number of missing values in dataset.
 print_string <- paste("Total number of missing values in dataset, i.e. total number of rows with NA's =", total_missing)
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] Total number of missing values in dataset, i.e. total number of rows with NA's = 2304
+```
+
+```r
 ## Impute missing values by filling in any NA with the average number of steps taken
 ## in that particular 5-minute interval, averaged across all days.
 ## Create new data frame which is initialized to the original data frame.
@@ -128,17 +171,33 @@ total_steps2 <- as.numeric(steps_sum2)
 ## Set ylim to the same range for both histograms so they can be visually compared.
 hist(total_steps2, main = "Histogram of Steps Taken with missing values imputed", 
      ylim = c(0, 25), xlab = "Total Number of Steps Taken Each Day divided into 15 bins", 15)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 ## Calculate the mean of the total number of steps taken each day with missing values imputed.
 mean_steps2 <- mean(total_steps2, na.rm = TRUE)
 ## Concatenate a title with the value of the mean of the total number of steps with missing values imputed and print.
 print_string <- paste("The mean of the total steps taken per day with missing values imputed = ", mean_steps2)
 ## Print result without quotation marks.
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The mean of the total steps taken per day with missing values imputed =  10766.1886792453
+```
+
+```r
 ## Calculate the median of the total number of steps taken each day with missing values imputed.
 median_steps2 <- median(total_steps2, na.rm = TRUE)
 ## Concatenate a title with the value of the median of the total number of steps with missing values imputed and print.
 print_string <- paste("The median of the total steps taken per day with missing values imputed = ", median_steps2)
 print(print_string, quote = FALSE)
+```
+
+```
+## [1] The median of the total steps taken per day with missing values imputed =  10766.1886792453
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -151,7 +210,8 @@ repository, these two time series plots are placed one above the other with the 
 on top and the weekday plot directly under it. The range on the y-axis is set to the same values to allow for easier visual comparison of the two plots. 
 
 Comparing the two plots, we can see that weekend activity is spread out more throughout the day than weekday activity. We can also see that weekday activity is more highly concentrated in the morning and there is a higher peak on a weekday morning than on a weekend morning.
-```{r}
+
+```r
 ## Determine if there are differences in activity patterns between weekdays and weekends.
 ## Using dataset with filled-in missing values, create a new factor variable in dataset 
 ## with two levels to indicate whether a particular date is a weekday or a weekend day.
@@ -181,3 +241,5 @@ plot(seq(0, (minutes_day - 5), by=5), main = "weekend", xlab = "Interval", ylim 
 plot(seq(0, (minutes_day - 5), by=5), main = "weekday", xlab = "Interval", ylim = c(0, 210),
      ylab = "Number of steps", steps_average_by_interval_wkend_or_wkday[,1], type="l")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
